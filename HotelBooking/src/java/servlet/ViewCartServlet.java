@@ -18,13 +18,10 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author NhanTT
  */
-@WebServlet(name = "ProcessServlet", urlPatterns = {"/"})
-public class ProcessServlet extends HttpServlet {
+@WebServlet(name = "ViewCartServlet", urlPatterns = {"/ViewCartServlet"})
+public class ViewCartServlet extends HttpServlet {
 
-    private final String index = "index.jsp";
-    private final String searchServlet = "SearchServlet";
-    private final String addToCartServlet = "AddToCartServlet";
-    private final String viewCartServlet = "ViewCartServlet";
+    private final String viewCartPage = "viewCart.jsp";
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -37,22 +34,10 @@ public class ProcessServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        
-        String url = index;
-        String btAction = request.getParameter("btAction");
-        if (btAction == null || btAction.isEmpty()) {
-            url = searchServlet;
-        } else if ("Search hotel".equals(btAction) || "Back to search".equals(btAction) || "Home".equals(btAction)) {
-            url = searchServlet;
-        } else if ("View cart".equals(btAction)) {
-            url = viewCartServlet;
-        } else if ("Add to cart".equals(btAction)) {
-            url = addToCartServlet;
-        }
+        String url = viewCartPage;
         
         RequestDispatcher rd = request.getRequestDispatcher(url);
         rd.forward(request, response);
-        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

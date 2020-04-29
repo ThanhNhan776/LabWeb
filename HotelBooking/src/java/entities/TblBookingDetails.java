@@ -10,6 +10,8 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -33,6 +35,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "TblBookingDetails.findByCheckInDate", query = "SELECT t FROM TblBookingDetails t WHERE t.checkInDate = :checkInDate"),
     @NamedQuery(name = "TblBookingDetails.findByCheckOutDate", query = "SELECT t FROM TblBookingDetails t WHERE t.checkOutDate = :checkOutDate"),
     @NamedQuery(name = "TblBookingDetails.findByPeriod", query = "SELECT t FROM TblBookingDetails t WHERE t.checkInDate <= :endDate AND t.checkOutDate >= :startDate"),
+    @NamedQuery(name = "TblBookingDetails.findRoomInPeriod", query = "SELECT t FROM TblBookingDetails t WHERE t.checkInDate <= :endDate AND t.checkOutDate >= :startDate AND t.roomId = :roomId"),
     @NamedQuery(name = "TblBookingDetails.findByAmount", query = "SELECT t FROM TblBookingDetails t WHERE t.amount = :amount"),
     @NamedQuery(name = "TblBookingDetails.findByUnitPrice", query = "SELECT t FROM TblBookingDetails t WHERE t.unitPrice = :unitPrice")})
 public class TblBookingDetails implements Serializable {
@@ -41,6 +44,7 @@ public class TblBookingDetails implements Serializable {
     @Id
     @Basic(optional = false)
     @Column(name = "Id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column(name = "CheckInDate")
     @Temporal(TemporalType.TIMESTAMP)
@@ -62,6 +66,14 @@ public class TblBookingDetails implements Serializable {
     public TblBookingDetails() {
     }
 
+    public TblBookingDetails(Date checkInDate, Date checkOutDate, Integer amount, Integer unitPrice, TblRoom roomId) {
+        this.checkInDate = checkInDate;
+        this.checkOutDate = checkOutDate;
+        this.amount = amount;
+        this.unitPrice = unitPrice;
+        this.roomId = roomId;
+    }
+    
     public TblBookingDetails(Integer id) {
         this.id = id;
     }

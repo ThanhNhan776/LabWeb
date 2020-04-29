@@ -6,6 +6,7 @@
 package dao;
 
 import entities.TblBookingDetails;
+import entities.TblRoom;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -29,6 +30,31 @@ public class BookingDetailsDAO {
             List<TblBookingDetails> details = em.createNamedQuery("TblBookingDetails.findByPeriod")
                     .setParameter("startDate", start)
                     .setParameter("endDate", end)
+                    .getResultList();
+            
+            transaction.commit();
+            return details;
+        } catch (Exception e) {
+            Logger.getLogger(BookingDetailsDAO.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+        
+        return new ArrayList<>();
+    }
+    
+    public List<TblBookingDetails> getRoomBookingDetailsInPeriod(TblRoom roomId, Date start, Date end) {
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            EntityTransaction transaction = em.getTransaction();
+            transaction.begin();
+            
+            List<TblBookingDetails> details = em.createNamedQuery("TblBookingDetails.findRoomInPeriod")
+                    .setParameter("startDate", start)
+                    .setParameter("endDate", end)
+                    .setParameter("roomId", roomId)
                     .getResultList();
             
             transaction.commit();

@@ -5,26 +5,36 @@
  */
 package servlet;
 
+import dao.RoomDAO;
+import entities.TblBookingDetails;
+import entities.TblRoom;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import service.CartService;
+import service.RoomService;
 
 /**
  *
  * @author NhanTT
  */
-@WebServlet(name = "ProcessServlet", urlPatterns = {"/"})
-public class ProcessServlet extends HttpServlet {
+@WebServlet(name = "AddToCartServlet", urlPatterns = {"/AddToCartServlet"})
+public class AddToCartServlet extends HttpServlet {
 
-    private final String index = "index.jsp";
-    private final String searchServlet = "SearchServlet";
-    private final String addToCartServlet = "AddToCartServlet";
-    private final String viewCartServlet = "ViewCartServlet";
+    private final String addSuccessPage = "addSuccess.jsp";
+    private final String errorPage = "error.jsp";
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -38,21 +48,35 @@ public class ProcessServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         
-        String url = index;
-        String btAction = request.getParameter("btAction");
-        if (btAction == null || btAction.isEmpty()) {
-            url = searchServlet;
-        } else if ("Search hotel".equals(btAction) || "Back to search".equals(btAction) || "Home".equals(btAction)) {
-            url = searchServlet;
-        } else if ("View cart".equals(btAction)) {
-            url = viewCartServlet;
-        } else if ("Add to cart".equals(btAction)) {
-            url = addToCartServlet;
+        String url = addSuccessPage;
+        
+        String roomIdStr = request.getParameter("roomId");
+        String hotelName = request.getParameter("hotelName");
+        String hotelLocation = request.getParameter("hotelLocation");
+        String checkinDateStr = request.getParameter("checkinDate");
+        String checkoutDateStr = request.getParameter("checkoutDate");
+        String amountStr = request.getParameter("amount");
+        try {
+            int roomId = Integer.parseInt(roomIdStr);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date checkinDate = checkinDateStr == null ? Date.from(Instant.now()) : dateFormat.parse(checkinDateStr);
+            Date checkoutDate = checkoutDateStr == null ? Date.from(Instant.now()) : dateFormat.parse(checkoutDateStr);
+            int amount = amountStr == null ? 1 : Integer.parseInt(amountStr);
+            
+            HttpSession session = request.getSession(true);
+            
+            TblRoom room = (new RoomDAO()).getRoomById(roomId);
+            TblBookingDetails detail = new TblBookingDetails(checkinDate, checkoutDate, amount, room.getTypeId().getPrice(), room);
+            
+            CartService cartService = new CartService(session);
+            cartService.addRoomToCart(detail);
+        } catch (ParseException ex) {
+            url = errorPage;
+            Logger.getLogger(AddToCartServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            RequestDispatcher rd = request.getRequestDispatcher(url);
+            rd.forward(request, response);
         }
-        
-        RequestDispatcher rd = request.getRequestDispatcher(url);
-        rd.forward(request, response);
-        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

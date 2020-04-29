@@ -68,7 +68,6 @@ public class HotelService {
                 hotelsToRemove.add(hotel);
             }
         });
-        System.out.println("Hotels to remove: " + hotelsToRemove.size());
         hotels.removeAll(hotelsToRemove); 
         
         return hotels;

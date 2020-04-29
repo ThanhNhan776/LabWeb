@@ -57,8 +57,8 @@ public class SearchServlet extends HttpServlet {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Date checkinDate = checkinDateStr == null ? Date.from(Instant.now()) : dateFormat.parse(checkinDateStr);
             Date checkoutDate = checkoutDateStr == null ? Date.from(Instant.now()) : dateFormat.parse(checkoutDateStr);
-            int amount = amountStr == null ? 0 : Integer.parseInt(amountStr);
-            System.out.println("AMOUNT: " + amount);
+            int amount = amountStr == null ? 1 : Integer.parseInt(amountStr);
+
             List<TblHotel> hotels = new ArrayList<>();
 
             HotelService service = new HotelService();
