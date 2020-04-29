@@ -12,6 +12,7 @@ import entities.TblHotel;
 import entities.TblRoom;
 import java.util.Date;
 import java.util.List;
+import java.util.Vector;
 
 /**
  *
@@ -22,7 +23,7 @@ public class HotelService {
     public List<TblHotel> getHotelsWithAvailableRoom(String name, String location,
             Date checkinDate, Date checkoutDate, int amount) {
         HotelDAO hotelDAO = new HotelDAO();
-        List<TblHotel> hotels = hotelDAO.getAllHotels(name, location);
+        Vector<TblHotel> hotels = (Vector<TblHotel>) hotelDAO.getAllHotels(name, location);
 
         BookingDetailsDAO detailsDAO = new BookingDetailsDAO();
         List<TblBookingDetails> details = detailsDAO.getBookingDetailsInPeriod(checkinDate, checkoutDate);
@@ -36,6 +37,12 @@ public class HotelService {
                     if (room.equals(detail.getRoomId())) {
                         int roomAmount = room.getAmount();
                         room.setAmount(roomAmount - detail.getAmount());
+                        if (room.getAmount() <= 0) {
+                            hotel.getTblRoomCollection().remove(room);
+                            if (hotel.getTblRoomCollection().isEmpty()) {
+                                hotels.remove(hotel);
+                            }
+                        }
                         isBreak = true;
                         break;
                     }

@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "TblBookingDetails.findById", query = "SELECT t FROM TblBookingDetails t WHERE t.id = :id"),
     @NamedQuery(name = "TblBookingDetails.findByCheckInDate", query = "SELECT t FROM TblBookingDetails t WHERE t.checkInDate = :checkInDate"),
     @NamedQuery(name = "TblBookingDetails.findByCheckOutDate", query = "SELECT t FROM TblBookingDetails t WHERE t.checkOutDate = :checkOutDate"),
-    @NamedQuery(name = "TblBookingDetails.findByPeriod", query = "SELECT t FROM TblBookingDetails t WHERE t.checkInDate <= :endDate OR t.checkOutDate >= :startDate"),
+    @NamedQuery(name = "TblBookingDetails.findByPeriod", query = "SELECT t FROM TblBookingDetails t WHERE t.checkInDate <= :endDate AND t.checkOutDate >= :startDate"),
     @NamedQuery(name = "TblBookingDetails.findByAmount", query = "SELECT t FROM TblBookingDetails t WHERE t.amount = :amount"),
     @NamedQuery(name = "TblBookingDetails.findByUnitPrice", query = "SELECT t FROM TblBookingDetails t WHERE t.unitPrice = :unitPrice")})
 public class TblBookingDetails implements Serializable {

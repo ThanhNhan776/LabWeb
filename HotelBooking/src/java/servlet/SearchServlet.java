@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,15 +48,15 @@ public class SearchServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
 
         String url = searchPage;
-        String hotelName = request.getParameter("hotel-name");
-        String hotelLocation = request.getParameter("hotel-location");
-        String checkinDateStr = request.getParameter("checkin-date");
-        String checkoutDateStr = request.getParameter("checkout-date");
+        String hotelName = request.getParameter("hotelName");
+        String hotelLocation = request.getParameter("hotelLocation");
+        String checkinDateStr = request.getParameter("checkinDate");
+        String checkoutDateStr = request.getParameter("checkoutDate");
         String amountStr = request.getParameter("amount");
         try {
             hotelName = hotelName == null ? "" : hotelName;
             hotelLocation = hotelLocation == null ? "" : hotelLocation;
-            DateFormat dateFormat = DateFormat.getDateInstance();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Date checkinDate = checkinDateStr == null ? Date.from(Instant.now()) : dateFormat.parse(checkinDateStr);
             Date checkoutDate = checkoutDateStr == null ? Date.from(Instant.now()) : dateFormat.parse(checkoutDateStr);
             int amount = amountStr == null ? 0 : Integer.parseInt(amountStr);
