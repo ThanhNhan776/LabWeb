@@ -36,7 +36,7 @@
             <br/>
             
             <label>Amount: </label>
-            <input type="number" min="0" name="amount" value="1" />
+            <input type="number" min="0" name="amount" value="${not empty param.amount ? param.amount : 1}" />
             <br/>
             
             <input type="submit" value="Search hotel" name="btAction" />

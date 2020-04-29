@@ -7,8 +7,6 @@ package servlet;
 
 import entities.TblHotel;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -60,7 +58,7 @@ public class SearchServlet extends HttpServlet {
             Date checkinDate = checkinDateStr == null ? Date.from(Instant.now()) : dateFormat.parse(checkinDateStr);
             Date checkoutDate = checkoutDateStr == null ? Date.from(Instant.now()) : dateFormat.parse(checkoutDateStr);
             int amount = amountStr == null ? 0 : Integer.parseInt(amountStr);
-
+            System.out.println("AMOUNT: " + amount);
             List<TblHotel> hotels = new ArrayList<>();
 
             HotelService service = new HotelService();
