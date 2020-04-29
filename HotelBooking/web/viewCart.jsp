@@ -23,41 +23,68 @@
 
         <c:if test="${not empty cart}">
             <c:set var="details" value="${cart.tblBookingDetailsCollection}" />
-            <p>There are ${details.size()} items in your cart.</p>
+            <c:if test="${empty details}">
+                <h2>You have no items in the cart. Please add some.</h2>
 
-            <table border="1">
-                <thead>
-                    <tr>
-                        <th>No.</th>
-                        <th>Hotel</th>
-                        <th>Room type</th>
-                        <th>Amount</th>
-                        <th>Unit price</th>
-                        <th>Total</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
+            </c:if>
 
-                    <c:forEach var="detail" items="${details}" varStatus="counter">
+            <c:if test="${not empty details}">
+
+                <c:set var="total" value="${0}"/>
+                <p>There are ${details.size()} items in your cart.</p>
+
+                <table border="1">
+                    <thead>
                         <tr>
-                            <td>${counter.count}</td>
-                            <td>${detail.roomId.hotelId.name}</td>
-                            <td>${detail.roomId.typeId.name}</td>
-                            <td>${detail.amount}</td>
-                            <td>${detail.unitPrice}</td>
-                            <td>${detail.amount * detail.unitPrice}</td>
-                            <td><input type="submit" value="Update"/></td>
+                            <th>No.</th>
+                            <th>Hotel</th>
+                            <th>Room type</th>
+                            <th>Amount</th>
+                            <th>Unit price</th>
+                            <th>Total</th>
+                            <th>Action</th>
                         </tr>
+                    </thead>
+                    <tbody>
+
+                        <c:forEach var="detail" items="${details}" varStatus="counter">
+                        <form action="UpdateCartServlet" method="POST" >
+                            <tr>
+                                <td>${counter.count}</td>
+                                <td>${detail.roomId.hotelId.name}</td>
+                                <td>${detail.roomId.typeId.name}</td>
+                                <td>
+                                    <input type="number" min="0" name="amount" value="${detail.amount}" 
+                                           style="text-align: center"/>
+                                </td>
+                                <td style="text-align: right">${detail.unitPrice} vnd</td>
+                                <td style="text-align: right">${detail.amount * detail.unitPrice} vnd</td>
+                                <td>
+                                    <input type="submit" value="Update" name="btAction"/>
+                                    <input type="submit" value="Delete" name="btAction" onclick=" return confirmIfDelete()"/>
+                                    <input type="hidden" name="detailPosition" value="${counter.count - 1}" />
+                                </td>
+                            </tr>
+                        </form>
+
+                        <c:set var="total" value="${total + detail.amount * detail.unitPrice}"/>
                     </c:forEach>
                 </tbody>
             </table>
 
+            <p>Total price: ${total} vnd</p>
         </c:if>
+    </c:if>
 
-        <form action="ProcessServlet">
-            <br/>
-            <input type="submit" value="Home" name="btAction" />
-        </form>
-    </body>
+    <form action="ProcessServlet">
+        <br/>
+        <input type="submit" value="Home" name="btAction" />
+    </form>
+
+    <script>
+        function confirmIfDelete() {
+            return confirm('You you want to remove this item?');
+        }
+    </script>
+</body>
 </html>

@@ -80,18 +80,18 @@
                 <div id="hotel-detail-${hotel.id}" class="hotel-detail" style="display: none;"> 
                     <p>Hotel ${hotel.name}</p>
                     <c:forEach var="room" items="${hotel.tblRoomCollection}" varStatus="counter">
-                        <form action="AddToCartServlet" method="POST" onclick="applySearchValues()">
+                        <form action="AddToCartServlet" method="POST" onsubmit="applySearchValues(event)">
                             <p>Room #${room.id}, available ${room.amount} rooms, 
                                 room type: ${room.typeId.name}, unit price ${room.typeId.price} vnd
-                                <input type="submit" value="Add to cart" name="btAction" />
+                                <input type="submit" value="Add to cart" name="btAction"/>
                             </p>
 
                             <input type="hidden" value="${room.id}" name="roomId"/>
-                            <input type="hidden" value="${param.hotelName}" name="hotelName" id="cart-hotelName"/>
-                            <input type="hidden" value="${param.hotelLocation}" name="hotelLocation" id="cart-hotelLocation"/>
-                            <input type="hidden" value="${param.checkinDate}" name="checkinDate" id="cart-checkinDate"/>
-                            <input type="hidden" value="${param.checkoutDate}" name="checkoutDate" id="cart-checkoutDate"/>
-                            <input type="hidden" value="${param.amount}" name="amount" id="cart-amount"/>
+                            <input type="hidden" value="${param.hotelName}" name="hotelName"/>
+                            <input type="hidden" value="${param.hotelLocation}" name="hotelLocation"/>
+                            <input type="hidden" value="${param.checkinDate}" name="checkinDate"/>
+                            <input type="hidden" value="${param.checkoutDate}" name="checkoutDate"/>
+                            <input type="hidden" value="${param.amount}" name="amount"/>
 
                         </form>
                     </c:forEach>
@@ -120,18 +120,20 @@
                 }
                 return true;
             }
-            function applySearchValues() {
+            function applySearchValues(event) {
                 let name = document.getElementsByName('hotelName')[0].value;
                 let location = document.getElementsByName('hotelLocation')[0].value;
                 let checkinDate = document.getElementsByName('checkinDate')[0].value;
                 let checkoutDate = document.getElementsByName('checkoutDate')[0].value;
                 let amount = document.getElementsByName('amount')[0].value;
+                
+                let form = event.target;
 
-                document.getElementById('cart-hotelName').value = name;
-                document.getElementById('cart-hotelLocation').value = location;
-                document.getElementById('cart-checkinDate').value = checkinDate;
-                document.getElementById('cart-checkoutDate').value = checkoutDate;
-                document.getElementById('cart-amount').value = amount;
+                form.elements.hotelName.value = name;
+                form.elements.hotelLocation.value = location;
+                form.elements.checkinDate.value = checkinDate;
+                form.elements.checkoutDate.value = checkoutDate;
+                form.elements.amount.value = amount;
             }
         </script>
     </body>

@@ -47,8 +47,16 @@ public class CartService {
         if (cart == null) {
             cart = new TblBooking();
             cart.setTblBookingDetailsCollection(new ArrayList<>());
-            session.setAttribute("CART", cart);
+            this.setCart(cart);
         }
+        return true;
+    }
+    
+    public boolean setCart(TblBooking cart) {
+        if (session == null) {
+            return false;
+        }
+        session.setAttribute("CART", cart);
         return true;
     }
 }

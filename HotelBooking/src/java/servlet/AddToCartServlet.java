@@ -9,7 +9,6 @@ import dao.RoomDAO;
 import entities.TblBookingDetails;
 import entities.TblRoom;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -24,7 +23,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import service.CartService;
-import service.RoomService;
 
 /**
  *
