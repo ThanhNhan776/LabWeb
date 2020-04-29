@@ -50,7 +50,7 @@ public class HotelService {
                         int roomAmount = room.getAmount();
                         room.setAmount(roomAmount - detail.getAmount());
                         
-                        if (room.getAmount() <= amount) {
+                        if (room.getAmount() < amount) {
                             roomsToRemove.add(room);
                         }
                         isBreak = true;
@@ -68,7 +68,8 @@ public class HotelService {
                 hotelsToRemove.add(hotel);
             }
         });
-        hotels.removeAll(hotelsToRemove);
+        System.out.println("Hotels to remove: " + hotelsToRemove.size());
+        hotels.removeAll(hotelsToRemove); 
         
         return hotels;
     }
