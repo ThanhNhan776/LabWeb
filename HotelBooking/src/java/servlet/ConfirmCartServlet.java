@@ -49,7 +49,7 @@ public class ConfirmCartServlet extends HttpServlet {
             boolean result = cartService.saveCart(discountCode);
             cartService.setCart(null);
             
-            request.setAttribute("WARNING", isRoomsValid);
+            request.setAttribute("WARNING", !isRoomsValid);
             request.setAttribute("RESULT", result);
         } finally {
             RequestDispatcher rd = request.getRequestDispatcher(url);
