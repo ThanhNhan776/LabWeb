@@ -14,6 +14,9 @@
         <title>Search Hotel</title>
     </head>
     <body>
+        <c:if test="${not empty USER}">
+            <h3 style="color: orangered">Welcome, ${USER.fullName}</h3>
+        </c:if>
         <h1>Search Hotel</h1>
 
         <form action="ProcessServlet" method="POST" onsubmit="return validateForm();">

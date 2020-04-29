@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -57,7 +58,7 @@ public class TblBooking implements Serializable {
     @JoinColumn(name = "StatusId", referencedColumnName = "Id", nullable = false)
     @ManyToOne(optional = false)
     private TblStatus statusId;
-    @OneToMany(mappedBy = "bookingId")
+    @OneToMany(mappedBy = "bookingId", cascade = CascadeType.PERSIST)
     private Collection<TblBookingDetails> tblBookingDetailsCollection;
 
     public TblBooking() {

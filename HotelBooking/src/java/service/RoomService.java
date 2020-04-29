@@ -7,6 +7,7 @@ package service;
 
 import dao.BookingDetailsDAO;
 import dao.RoomDAO;
+import entities.TblBooking;
 import entities.TblBookingDetails;
 import entities.TblRoom;
 import java.util.Date;
@@ -36,5 +37,24 @@ public class RoomService {
         }
         
         return room;
+    }
+    
+    public boolean confirmRoom(TblBookingDetails detail) {
+        int roomId = detail.getRoomId().getId();
+        Date checkinDate = detail.getCheckInDate();
+        Date checkoutDate = detail.getCheckOutDate();
+        
+        TblRoom room = this.getRoomByIdInPeriod(roomId, checkinDate, checkoutDate);
+        
+        return detail.getAmount() <= room.getAmount();
+    }
+    
+    public boolean confirmRooms(TblBooking booking) {
+        for (TblBookingDetails detail : booking.getTblBookingDetailsCollection()) {
+            if (!this.confirmRoom(detail)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

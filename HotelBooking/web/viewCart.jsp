@@ -73,6 +73,14 @@
             </table>
 
             <p>Total price: ${total} vnd</p>
+
+            <form action="ConfirmCartServlet" method="POST">
+                <label>Discount Code</label>
+                <input type="text" name="discountCode" value="" placeholder="Enter your discount code"/>
+                <br/>
+                <br/>
+                <input type="submit" value="Confirm" />
+            </form>
         </c:if>
     </c:if>
 
