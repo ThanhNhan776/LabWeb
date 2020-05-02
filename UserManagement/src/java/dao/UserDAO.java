@@ -69,6 +69,30 @@ public class UserDAO {
         return null;
     }
     
+    public List<TblUser> getAllActiveUsers(String name) {
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            EntityTransaction transaction = em.getTransaction();
+            transaction.begin();
+
+            List<TblUser> users = em.createNamedQuery("TblUser.findByName")
+                    .setParameter("name", "%" + name + "%")
+                    .getResultList();
+
+            transaction.commit();
+
+            return users;
+        } catch (Exception e) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+
+        return null;
+    }
+    
     public List<TblUser> getAllActiveUsers(TblUserGroup group) {
         EntityManager em = DBUtils.getEntityManager();
         try {

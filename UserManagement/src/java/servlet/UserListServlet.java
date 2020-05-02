@@ -6,7 +6,9 @@
 package servlet;
 
 import entities.TblUser;
+import entities.TblUserGroup;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,15 +49,29 @@ public class UserListServlet extends HttpServlet {
 
         String url = loginPage;
         try {
+            String searchName = request.getParameter("searchName");
+            searchName = searchName == null ? "" : searchName;
+
             TblUser user = userService.getCurrentUser();
             if (user != null) {
+                List<TblUserGroup> groups;
                 List<TblUser> users;
                 if (user.getGroupId().getName().equals("Admin")) {
-                    users = userService.getAllUsers();
+                    groups = userService.getAllGroups();
+                    users = userService.getAllUsers(searchName);
+                    assignUsersToGroups(users, groups);
                 } else {
-                    users = userService.getAllUsers(user.getGroupId());
+                    users = new ArrayList<>();
+                    users.add(user); // create user list of one current non admin user
+
+                    TblUserGroup group = user.getGroupId();
+                    group.setTblUserCollection(users);  // reduce the group of the user to only one user
+
+                    groups = new ArrayList<>();
+                    groups.add(group); // set only one group to group list
                 }
                 request.setAttribute("USER_LIST", users);
+                request.setAttribute("GROUP_LIST", groups);
                 url = userListPage;
             }
         } catch (Exception ex) {
@@ -104,5 +120,18 @@ public class UserListServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
+    private void assignUsersToGroups(List<TblUser> users, List<TblUserGroup> groups) {
+        for (TblUserGroup group : groups) {
+            List<TblUser> gUsers = new ArrayList<>();
+            for (TblUser user : users) {
+                if (user.getGroupId().equals(group)) {
+                    gUsers.add(user);
+                }
+            }
+            
+            group.setTblUserCollection(gUsers);
+        }
+    }
 
 }

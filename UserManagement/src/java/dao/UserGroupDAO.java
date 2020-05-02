@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package dao;
 
 import entities.TblUserGroup;
@@ -19,21 +18,45 @@ import utils.DBUtils;
  * @author TiTi
  */
 public class UserGroupDAO {
+
     public TblUserGroup getGroupByName(String name) {
         EntityManager em = DBUtils.getEntityManager();
         try {
             EntityTransaction transaction = em.getTransaction();
             transaction.begin();
 
-            List<TblUserGroup> users = em.createNamedQuery("TblUserGroup.findByName")
+            List<TblUserGroup> groups = em.createNamedQuery("TblUserGroup.findByName")
                     .setParameter("name", name)
                     .getResultList();
 
             transaction.commit();
 
-            if (!users.isEmpty()) {
-                return users.get(0);
+            if (!groups.isEmpty()) {
+                return groups.get(0);
             }
+        } catch (Exception e) {
+            Logger.getLogger(UserGroupDAO.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+
+        return null;
+    }
+
+    public List<TblUserGroup> getAllGroups() {
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            EntityTransaction transaction = em.getTransaction();
+            transaction.begin();
+
+            List<TblUserGroup> groups = em.createNamedQuery("TblUserGroup.findAll")
+                    .getResultList();
+
+            transaction.commit();
+
+            return groups;
         } catch (Exception e) {
             Logger.getLogger(UserGroupDAO.class.getName()).log(Level.SEVERE, null, e);
         } finally {

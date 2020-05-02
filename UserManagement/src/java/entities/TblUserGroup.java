@@ -3,6 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package entities;
 
 import java.io.Serializable;
@@ -97,5 +98,5 @@ public class TblUserGroup implements Serializable {
     public String toString() {
         return "entities.TblUserGroup[ id=" + id + " ]";
     }
-    
+
 }

@@ -3,6 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package entities;
 
 import java.io.Serializable;
@@ -32,6 +33,7 @@ import javax.xml.bind.annotation.XmlTransient;
     ,    @NamedQuery(name = "TblUser.findAllActive", query = "SELECT t FROM TblUser t WHERE t.status = 'active'")
     , @NamedQuery(name = "TblUser.findByUsername", query = "SELECT t FROM TblUser t WHERE t.username = :username")
     , @NamedQuery(name = "TblUser.findByPassword", query = "SELECT t FROM TblUser t WHERE t.password = :password")
+    , @NamedQuery(name = "TblUser.findByName", query = "SELECT t FROM TblUser t WHERE t.name LIKE :name AND t.status = 'active'")
     , @NamedQuery(name = "TblUser.findByEmail", query = "SELECT t FROM TblUser t WHERE t.email = :email")
     , @NamedQuery(name = "TblUser.findByPhone", query = "SELECT t FROM TblUser t WHERE t.phone = :phone")
     , @NamedQuery(name = "TblUser.findByPhoto", query = "SELECT t FROM TblUser t WHERE t.photo = :photo")
@@ -47,6 +49,8 @@ public class TblUser implements Serializable {
     @Basic(optional = false)
     @Column(name = "Password", nullable = false, length = 100)
     private String password;
+    @Column(name = "Name", length = 500)
+    private String name;
     @Column(name = "Email", length = 100)
     private String email;
     @Column(name = "Phone", length = 15)
@@ -87,6 +91,14 @@ public class TblUser implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {

@@ -28,22 +28,19 @@ public class UserService {
         this.session = session;
     }
 
-    public List<TblUser> getAllUsers() {
+    public List<TblUser> getAllUsers(String searchName) {
         UserDAO userDAO = new UserDAO();
-        return userDAO.getAllActiveUsers();
-    }
-
-    public List<TblUser> getAllUsers(String groupName) {
-        UserGroupDAO userGroupDAO = new UserGroupDAO();
-        TblUserGroup group = userGroupDAO.getGroupByName(groupName);
-
-        UserDAO userDAO = new UserDAO();
-        return userDAO.getAllActiveUsers(group);
+        return userDAO.getAllActiveUsers(searchName);
     }
 
     public List<TblUser> getAllUsers(TblUserGroup group) {
         UserDAO userDAO = new UserDAO();
         return userDAO.getAllActiveUsers(group);
+    }
+    
+    public List<TblUserGroup> getAllGroups() {
+        UserGroupDAO userGroupDAO = new UserGroupDAO();
+        return userGroupDAO.getAllGroups();
     }
 
     public TblUser getCurrentUser() {
