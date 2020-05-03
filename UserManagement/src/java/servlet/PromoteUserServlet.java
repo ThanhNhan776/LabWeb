@@ -5,7 +5,6 @@
  */
 package servlet;
 
-import entities.TblUser;
 import java.io.IOException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -13,15 +12,14 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import service.UserService;
+import service.PromotionListService;
 
 /**
  *
  * @author NhanTT
  */
-@WebServlet(name = "UpdateUserServlet", urlPatterns = {"/UpdateUserServlet"})
-public class UpdateUserServlet extends HttpServlet {
+@WebServlet(name = "PromoteUserServlet", urlPatterns = {"/PromoteUserServlet"})
+public class PromoteUserServlet extends HttpServlet {
 
     private final String userListServlet = "UserListServlet";
     private final String errorPage = "error.jsp";
@@ -42,32 +40,22 @@ public class UpdateUserServlet extends HttpServlet {
 
         String url = userListServlet;
 
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-        String email = request.getParameter("email");
-        String phone = request.getParameter("phone");
-        String photo = request.getParameter("photo");
-        String groupIdStr = request.getParameter("groupId");
-        String btAction = request.getParameter("btAction");
-
         try {
-            HttpSession session = request.getSession(true);
-            UserService userService = new UserService(session);
-            boolean passwordChanged = false;
+            String username = request.getParameter("username");
 
-            if ("Delete".equals(btAction)) {
-                userService.deleteUser(username);
+            if (username != null) {
+                String message = "";
 
-            } else if ("Update".equals(btAction)) {
-                int groupId = Integer.parseInt(groupIdStr);
-                userService.updateUser(username, password, email, phone, photo, groupId);
-                passwordChanged = password != null && !password.trim().isEmpty();
-            }
-            userService.refreshCurrentUser();
+                PromotionListService promotionListService = new PromotionListService();
 
-            TblUser currentUser = userService.getCurrentUser();
-            if (currentUser == null || passwordChanged) {
-                url = loginPage;
+                if (promotionListService.hasPromoted(username)) {
+                    message = "Warning: User " + username + " has already been promoted!";
+                } else {
+                    promotionListService.insertUser(username);
+                    message = "Info: User " + username + " has been added to promotion list!";
+                }
+
+                request.setAttribute("MESSAGE", message);
             }
         } catch (Exception e) {
             url = errorPage;

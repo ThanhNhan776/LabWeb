@@ -3,26 +3,24 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package entities;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -34,25 +32,25 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "TblPromotionList.findAll", query = "SELECT t FROM TblPromotionList t")
     , @NamedQuery(name = "TblPromotionList.findById", query = "SELECT t FROM TblPromotionList t WHERE t.id = :id")
+    , @NamedQuery(name = "TblPromotionList.findCurrentUsername", query = "SELECT t FROM TblPromotionList t WHERE t.username = :username ORDER BY t.createdDate DESC")
     , @NamedQuery(name = "TblPromotionList.findByRank", query = "SELECT t FROM TblPromotionList t WHERE t.rank = :rank")
-    , @NamedQuery(name = "TblPromotionList.findByCreatedDate", query = "SELECT t FROM TblPromotionList t WHERE t.createdDate = :createdDate")})
+    , @NamedQuery(name = "TblPromotionList.findByCreatedDate", query = "SELECT t FROM TblPromotionList t WHERE t.createdDate = :createdDate")
+    , @NamedQuery(name = "TblPromotionList.findByAction", query = "SELECT t FROM TblPromotionList t WHERE t.action = :action")})
 public class TblPromotionList implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @Column(name = "Id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column(name = "Rank")
     private Integer rank;
     @Column(name = "CreatedDate")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdDate;
-    @OneToMany(mappedBy = "previousPromotion")
-    private Collection<TblPromotionList> tblPromotionListCollection;
-    @JoinColumn(name = "PreviousPromotion", referencedColumnName = "Id")
-    @ManyToOne
-    private TblPromotionList previousPromotion;
+    @Column(name = "Action", length = 50)
+    private String action;
     @JoinColumn(name = "Username", referencedColumnName = "Username")
     @ManyToOne
     private TblUser username;
@@ -88,21 +86,12 @@ public class TblPromotionList implements Serializable {
         this.createdDate = createdDate;
     }
 
-    @XmlTransient
-    public Collection<TblPromotionList> getTblPromotionListCollection() {
-        return tblPromotionListCollection;
+    public String getAction() {
+        return action;
     }
 
-    public void setTblPromotionListCollection(Collection<TblPromotionList> tblPromotionListCollection) {
-        this.tblPromotionListCollection = tblPromotionListCollection;
-    }
-
-    public TblPromotionList getPreviousPromotion() {
-        return previousPromotion;
-    }
-
-    public void setPreviousPromotion(TblPromotionList previousPromotion) {
-        this.previousPromotion = previousPromotion;
+    public void setAction(String action) {
+        this.action = action;
     }
 
     public TblUser getUsername() {
