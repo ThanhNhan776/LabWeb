@@ -42,6 +42,11 @@
             <br/>
             <br/>
         </c:if>
+        <c:if test="${USER.groupId.name != 'Admin'}">
+            <a href="promotionHistory.jsp">View Promotion history</a>
+            <br/>
+            <br/>
+        </c:if>
 
         <c:if test="${not empty MESSAGE}">
             <h4 style="color: lightseagreen">
@@ -62,6 +67,8 @@
             </c:forEach>
             <br/>
             <br/>
+
+            <!-- Tall All -->
             <div id="tab-all" class="tab">
                 <table border="1">
                     <thead>
@@ -142,12 +149,15 @@
 
         <c:if test="${not empty groups}">
             <c:forEach var="group" items="${groups}" varStatus="counter">
+
+                <!-- Tab of each group -->
                 <div id="tab-${group.id}" class="tab" style="display: none">
                     <table border="1">
                         <thead>
                             <tr>
                                 <th>No.</th>
                                 <th>Photo</th>
+                                <th>Name</th>
                                 <th>Username</th>
                                 <th>Password</th>
                                 <th>Email</th>
@@ -155,22 +165,64 @@
                                 <th>Photo Url</th>
                                 <th>Role</th>
                                 <th>Action</th>
+                                    <c:if test="${USER.groupId.name eq 'Admin'}">
+                                    <th>
+                                        Admin Action
+                                    </th>
+                                </c:if>
                             </tr>
                         </thead>
                         <tbody>
                             <c:forEach var="user" items="${group.tblUserCollection}" varStatus="counter">
                                 <tr>
-                                    <td>${counter.count}</td>
-                                    <td><img src="${user.photo}" height="50px"/></td>
-                                    <td>${user.username}</td>
-                                    <td>${user.password}</td>
-                                    <td>${user.email}</td>
-                                    <td>${user.phone}</td>
-                                    <td>${user.photo}</td>
-                                    <td>${user.groupId.name}</td>
-                                    <td><button>Update</button></td>
-                                </tr>
-                            </c:forEach>
+                            <form action="UpdateUserServlet" method="POST"> 
+                                <td>${counter.count}</td>
+                                <td><img src="${user.photo}" height="50px"/></td>
+                                <td>${user.name}</td>
+                                <td>
+                                    <input type="text" name="username" value="${user.username}" required style="width: 100px"/>
+                                </td> 
+                                <td>
+                                    <input type="text" name="password" value="" placeholder="Enter new password..."/>
+                                </td>
+                                <td>
+                                    <input type="email" name="email" value="${user.email}" />
+                                </td>
+                                <td>
+                                    <input type="text" name="phone" value="${user.phone}" style="width: 100px"/>
+                                </td>
+                                <td>
+                                    <input type="text" name="photo" value="${user.photo}" />
+                                </td>
+                                <td>
+                                    <select name="groupId">
+                                        <c:forEach var="singleGroup" items="${ALL_GROUPS}">
+                                            <option value="${singleGroup.id}" ${user.groupId.id eq singleGroup.id ? 'selected' : ''}>
+                                                ${singleGroup.name}
+                                            </option>
+                                        </c:forEach>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="submit" value="Update" name="btAction" />
+                                    <br/>
+                                    <input type="submit" value="Delete" name="btAction" style="margin-top: 5px; color: orangered"/>
+
+                                    <input type="hidden" name="searchName" value="${param.searchName}" />
+                                </td>
+                            </form>
+                            <c:if test="${USER.groupId.name eq 'Admin'}">
+                                <form action="PromoteUserServlet" method="POST">
+                                    <td style="text-align: center">
+                                        <input type="submit" value="Promote"/>
+
+                                        <input type="hidden" name="searchName" value="${param.searchName}" />
+                                        <input type="hidden" name="username" value="${user.username}" />
+                                    </td>
+                                </form>
+                            </c:if>
+                            </tr>
+                        </c:forEach>
                         </tbody>
                     </table>
 

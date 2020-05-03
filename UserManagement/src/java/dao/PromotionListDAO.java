@@ -78,7 +78,31 @@ public class PromotionListDAO {
             EntityTransaction transaction = em.getTransaction();
             transaction.begin();
 
-            List<TblPromotionList> promotions = em.createNamedQuery("TblPromotionList.findAllCurrentUsername")
+            List<TblPromotionList> promotions = em.createNamedQuery("TblPromotionList.findAllCurrentUsernames")
+                    .getResultList();
+
+            transaction.commit();
+
+            return promotions;
+        } catch (Exception e) {
+            Logger.getLogger(PromotionListDAO.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+
+        return null;
+    }
+    
+    public List<TblPromotionList> getAllCurrentPromotions(TblUser user) {
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            EntityTransaction transaction = em.getTransaction();
+            transaction.begin();
+
+            List<TblPromotionList> promotions = em.createNamedQuery("TblPromotionList.findByUsername")
+                    .setParameter("username", user)
                     .getResultList();
 
             transaction.commit();

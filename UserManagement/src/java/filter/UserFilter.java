@@ -5,11 +5,15 @@
  */
 package filter;
 
+import entities.TblPromotionList;
 import entities.TblUser;
+import entities.TblUserGroup;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -20,6 +24,7 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import service.PromotionListService;
 import service.UserService;
 
 /**
@@ -30,11 +35,15 @@ import service.UserService;
     "/UserListServlet",
     "/UpdateUserServlet",
     "/newUser.jsp",
-    "/userList.jsp"})
+    "/userList.jsp",
+    "/promotionHistory.jsp"})
 public class UserFilter implements Filter {
 
     private static final boolean debug = true;
     private static final String loginPage = "login.jsp";
+    private static final String promotionHistoryPage = "promotionHistory.jsp";
+    
+    private static List<String> nonAdminResources;
 
     // The filter configuration object we are associated with.  If
     // this value is null, this filter instance is not currently
@@ -42,6 +51,8 @@ public class UserFilter implements Filter {
     private FilterConfig filterConfig = null;
 
     public UserFilter() {
+        nonAdminResources = new ArrayList<>();
+        nonAdminResources.add(promotionHistoryPage);
     }
 
     private void doBeforeProcessing(ServletRequest request, ServletResponse response)
@@ -84,13 +95,25 @@ public class UserFilter implements Filter {
             HttpServletRequest req = (HttpServletRequest) request;
             HttpServletResponse res = (HttpServletResponse) response;
             HttpSession session = req.getSession(true);
-            
+
             UserService userService = new UserService(session);
 
             TblUser user = userService.getCurrentUser();
             if (user == null) {
                 res.sendRedirect(loginPage);
-            } else {
+            } 
+            else if ("Admin".equals(user.getGroupId().getName()) && isRequestingNonAdminResource(req)) {
+                res.sendRedirect(loginPage);
+            }
+            else {
+                String uri = req.getRequestURI();
+                if (uri.contains(promotionHistoryPage)) {
+                    PromotionListService promotionListService = new PromotionListService();
+                    List<TblPromotionList> promotions = promotionListService.getPromotionHistory(user);
+                    
+                    req.setAttribute("PROMOTION_HISTORY", promotions);
+                }
+
                 chain.doFilter(request, response);
             }
         } catch (IOException | ServletException t) {
@@ -209,6 +232,16 @@ public class UserFilter implements Filter {
 
     public void log(String msg) {
         filterConfig.getServletContext().log(msg);
+    }
+
+    private boolean isRequestingNonAdminResource(HttpServletRequest req) {
+        String uri = req.getRequestURI();
+        for (String resource : nonAdminResources) {
+            if (uri.contains(resource)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
