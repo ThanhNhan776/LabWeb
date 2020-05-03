@@ -11,6 +11,16 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>User list Page</title>
+        <style>
+            th, td {
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+            input {
+                text-align: center;
+                width: auto;
+            }
+        </style>
     </head>
     <body>
         <c:if test="${not empty USER}">
@@ -48,6 +58,7 @@
                         <tr>
                             <th>No.</th>
                             <th>Photo</th>
+                            <th>Name</th>
                             <th>Username</th>
                             <th>Password</th>
                             <th>Email</th>
@@ -59,18 +70,45 @@
                     </thead>
                     <tbody>
                         <c:forEach var="user" items="${users}" varStatus="counter">
+                        <form action="UpdateUserServlet" method="POST"> 
                             <tr>
                                 <td>${counter.count}</td>
                                 <td><img src="${user.photo}" height="50px"/></td>
-                                <td>${user.username}</td>
-                                <td>${user.password}</td>
-                                <td>${user.email}</td>
-                                <td>${user.phone}</td>
-                                <td>${user.photo}</td>
-                                <td>${user.groupId.name}</td>
-                                <td><button>Update</button></td>
+                                <td>${user.name}</td>
+                                <td>
+                                    <input type="text" name="username" value="${user.username}" required/>
+                                </td> 
+                                <td>
+                                    <input type="text" name="password" value="" placeholder="Enter new password..."/>
+                                </td>
+                                <td>
+                                    <input type="email" name="email" value="${user.email}" />
+                                </td>
+                                <td>
+                                    <input type="text" name="phone" value="${user.phone}" />
+                                </td>
+                                <td>
+                                    <input type="text" name="photo" value="${user.photo}" />
+                                </td>
+                                <td>
+                                    <select name="groupId">
+                                        <c:forEach var="singleGroup" items="${ALL_GROUPS}">
+                                            <option value="${singleGroup.id}" ${user.groupId.id eq singleGroup.id ? 'selected' : ''}>
+                                                ${singleGroup.name}
+                                            </option>
+                                        </c:forEach>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="submit" value="Update" name="btAction" />
+                                    <br/>
+                                    <input type="submit" value="Delete" name="btAction" style="margin-top: 5px; color: orangered"/>
+
+                                    <input type="hidden" name="searchName" value="${param.searchName}" />
+                                </td>
                             </tr>
-                        </c:forEach>
+                        </form>
+                    </c:forEach>
                     </tbody>
                 </table>
 

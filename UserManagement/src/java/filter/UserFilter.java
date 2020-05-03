@@ -5,7 +5,7 @@
  */
 package filter;
 
-import entities.TblAccount;
+import entities.TblUser;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
@@ -20,16 +20,15 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import service.UserService;
 
 /**
  *
- * @author NhanTT
+ * @author TiTi
  */
 @WebFilter(filterName = "UserFilter", urlPatterns = {
-    "/AddToCartServlet",
-    "/ViewCartServlet",
-    "/UpdateCartServlet",
-    "/ConfirmCartServlet"})
+    "/UserListServlet",
+    "/UpdateUserServlet"})
 public class UserFilter implements Filter {
 
     private static final boolean debug = true;
@@ -56,24 +55,6 @@ public class UserFilter implements Filter {
         if (debug) {
             log("LoginFilter:DoAfterProcessing");
         }
-
-        // Write code here to process the request and/or response after
-        // the rest of the filter chain is invoked.
-        // For example, a logging filter might log the attributes on the
-        // request object after the request has been processed. 
-        /*
-	for (Enumeration en = request.getAttributeNames(); en.hasMoreElements(); ) {
-	    String name = (String)en.nextElement();
-	    Object value = request.getAttribute(name);
-	    log("attribute: " + name + "=" + value.toString());
-
-	}
-         */
-        // For example, a filter might append something to the response.
-        /*
-	PrintWriter respOut = new PrintWriter(response.getWriter());
-	respOut.println("<P><B>This has been appended by an intrusive filter.</B>");
-         */
     }
 
     /**
@@ -85,6 +66,7 @@ public class UserFilter implements Filter {
      * @exception IOException if an input/output error occurs
      * @exception ServletException if a servlet error occurs
      */
+    @Override
     public void doFilter(ServletRequest request, ServletResponse response,
             FilterChain chain)
             throws IOException, ServletException {
@@ -99,20 +81,21 @@ public class UserFilter implements Filter {
         try {
             HttpServletRequest req = (HttpServletRequest) request;
             HttpServletResponse res = (HttpServletResponse) response;
-            HttpSession session = req.getSession();
+            HttpSession session = req.getSession(true);
+            
+            UserService userService = new UserService(session);
 
-            TblAccount user = (TblAccount) session.getAttribute("USER");
-            if (user == null || !user.getRoleId().getDescription().equals("User")) {
+            TblUser user = userService.getCurrentUser();
+            if (user == null) {
                 res.sendRedirect(loginPage);
             } else {
                 chain.doFilter(request, response);
             }
-        } catch (Throwable t) {
+        } catch (IOException | ServletException t) {
             // If an exception is thrown somewhere down the filter chain,
             // we still want to execute our after processing, and then
             // rethrow the problem after that.
             problem = t;
-            t.printStackTrace();
         }
 
         doAfterProcessing(request, response);

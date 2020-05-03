@@ -14,7 +14,7 @@ import utils.DBUtils;
 /**
  * Web application lifecycle listener.
  *
- * @author NhanTT
+ * @author TiTi
  */
 @WebListener()
 public class ApplicationListener implements ServletContextListener {

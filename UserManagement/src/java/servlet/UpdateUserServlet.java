@@ -6,12 +6,8 @@
 package servlet;
 
 import entities.TblUser;
-import entities.TblUserGroup;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.io.PrintWriter;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -23,13 +19,14 @@ import service.UserService;
 
 /**
  *
- * @author TiTi
+ * @author NhanTT
  */
-@WebServlet(name = "UserListServlet", urlPatterns = {"/UserListServlet"})
-public class UserListServlet extends HttpServlet {
+@WebServlet(name = "UpdateUserServlet", urlPatterns = {"/UpdateUserServlet"})
+public class UpdateUserServlet extends HttpServlet {
 
+    private final String userListServlet = "UserListServlet";
+    private final String errorPage = "error.jsp";
     private final String loginPage = "login.jsp";
-    private final String userListPage = "userList.jsp";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -44,42 +41,37 @@ public class UserListServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
 
-        HttpSession session = request.getSession(true);
-        UserService userService = new UserService(session);
+        String url = userListServlet;
 
-        String url = loginPage;
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+        String email = request.getParameter("email");
+        String phone = request.getParameter("phone");
+        String photo = request.getParameter("photo");
+        String groupIdStr = request.getParameter("groupId");
+        String btAction = request.getParameter("btAction");
+
         try {
-            String searchName = request.getParameter("searchName");
-            searchName = searchName == null ? "" : searchName;
+            HttpSession session = request.getSession(true);
+            UserService userService = new UserService(session);
+            boolean passwordChanged = false;
 
-            TblUser user = userService.getCurrentUser();
-            if (user != null) {
-                List<TblUserGroup> groups;
-                List<TblUserGroup> allGroups;
-                List<TblUser> users;
-                if (user.getGroupId().getName().equals("Admin")) {
-                    groups = userService.getAllGroups();
-                    users = userService.getAllUsers(searchName);
-                    assignUsersToGroups(users, groups);
-                } else {
-                    users = new ArrayList<>();
-                    users.add(user); // create user list of one current non admin user
+            if ("Delete".equals(btAction)) {
+                userService.deleteUser(username);
 
-                    TblUserGroup group = user.getGroupId();
-                    group.setTblUserCollection(users);  // reduce the group of the user to only one user
-
-                    groups = new ArrayList<>();
-                    groups.add(group); // set only one group to group list
-                }
-                allGroups = userService.getAllGroups();
-                
-                request.setAttribute("USER_LIST", users);
-                request.setAttribute("GROUP_LIST", groups);
-                request.setAttribute("ALL_GROUPS", allGroups);
-                url = userListPage;
+            } else if ("Update".equals(btAction)) {
+                int groupId = Integer.parseInt(groupIdStr);
+                userService.updateUser(username, password, email, phone, photo, groupId);
+                passwordChanged = password != null && !password.trim().isEmpty();
             }
-        } catch (Exception ex) {
-            Logger.getLogger(UserListServlet.class.getName()).log(Level.SEVERE, null, ex);
+            userService.refreshCurrentUser();
+
+            TblUser currentUser = userService.getCurrentUser();
+            if (currentUser == null || passwordChanged) {
+                url = loginPage;
+            }
+        } catch (Exception e) {
+            url = errorPage;
         } finally {
             RequestDispatcher rd = request.getRequestDispatcher(url);
             rd.forward(request, response);
@@ -124,18 +116,5 @@ public class UserListServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
-    private void assignUsersToGroups(List<TblUser> users, List<TblUserGroup> groups) {
-        for (TblUserGroup group : groups) {
-            List<TblUser> gUsers = new ArrayList<>();
-            for (TblUser user : users) {
-                if (user.getGroupId().equals(group)) {
-                    gUsers.add(user);
-                }
-            }
-            
-            group.setTblUserCollection(gUsers);
-        }
-    }
 
 }

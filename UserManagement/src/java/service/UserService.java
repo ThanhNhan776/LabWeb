@@ -37,7 +37,7 @@ public class UserService {
         UserDAO userDAO = new UserDAO();
         return userDAO.getAllActiveUsers(group);
     }
-    
+
     public List<TblUserGroup> getAllGroups() {
         UserGroupDAO userGroupDAO = new UserGroupDAO();
         return userGroupDAO.getAllGroups();
@@ -76,5 +76,39 @@ public class UserService {
 
     public void logout() {
         this.setCurrentUser(null);
+    }
+
+    public void refreshCurrentUser() {
+        TblUser currentUser = this.getCurrentUser();
+        UserDAO userDAO = new UserDAO();
+        TblUser dbUser = userDAO.getUserByUsername(currentUser.getUsername());
+        this.setCurrentUser(dbUser);
+    }
+
+    public void deleteUser(String username) {
+        UserDAO userDAO = new UserDAO();
+        TblUser user = userDAO.getUserByUsername(username);
+        user.setStatus("inactive");
+        userDAO.updateUser(user);
+    }
+
+    public TblUser updateUser(String username, String password, String email, String phone, String photo, int groupId) {
+        UserDAO userDAO = new UserDAO();
+        TblUser user = userDAO.getUserByUsername(username);
+
+        if (password != null && !password.trim().isEmpty()) {
+            String passwordHash = PasswordEncrypter.encrypt(password.trim());
+            user.setPassword(passwordHash);
+        }
+
+        user.setEmail(email);
+        user.setPhone(phone);
+        user.setPhoto(photo);
+
+        UserGroupDAO groupDAO = new UserGroupDAO();
+        TblUserGroup group = groupDAO.getGroupById(groupId);
+        user.setGroupId(group);
+
+        return userDAO.updateUser(user);
     }
 }

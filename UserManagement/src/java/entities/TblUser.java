@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "TblUser.findAll", query = "SELECT t FROM TblUser t")
     ,    @NamedQuery(name = "TblUser.findAllActive", query = "SELECT t FROM TblUser t WHERE t.status = 'active'")
-    , @NamedQuery(name = "TblUser.findByUsername", query = "SELECT t FROM TblUser t WHERE t.username = :username")
+    , @NamedQuery(name = "TblUser.findByUsername", query = "SELECT t FROM TblUser t WHERE t.username = :username AND t.status = 'active'")
     , @NamedQuery(name = "TblUser.findByPassword", query = "SELECT t FROM TblUser t WHERE t.password = :password")
     , @NamedQuery(name = "TblUser.findByName", query = "SELECT t FROM TblUser t WHERE t.name LIKE :name AND t.status = 'active'")
     , @NamedQuery(name = "TblUser.findByEmail", query = "SELECT t FROM TblUser t WHERE t.email = :email")

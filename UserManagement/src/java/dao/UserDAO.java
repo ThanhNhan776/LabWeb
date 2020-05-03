@@ -116,4 +116,25 @@ public class UserDAO {
 
         return null;
     }
+    
+    public TblUser updateUser(TblUser user) {
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            EntityTransaction transaction = em.getTransaction();
+            transaction.begin();
+
+            em.merge(user);
+
+            transaction.commit();
+            return user;
+        } catch (Exception e) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+
+        return null;
+    }
 }
