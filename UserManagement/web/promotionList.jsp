@@ -54,11 +54,12 @@
                             <td>${counter.count}</td>
                             <td>${promotion.username.username}</td>
                             <td>
-                                <input type="text" name="rank" value="${promotion.rank}" />
+                                <input type="number" min="1" max="10" name="rank" value="${promotion.rank}" required/>
                             </td>
                             <td>
                                 <input type="submit" value="Update" name="btAction" />
                                 <input type="submit" value="Delete" name="btAction" style="margin-left: 2px; color: orangered"/>
+                                <input type="hidden" name="id" value="${promotion.id}" />
                             </td>
                         </tr>
                     </form>
