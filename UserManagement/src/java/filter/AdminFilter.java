@@ -5,6 +5,7 @@
  */
 package filter;
 
+import entities.TblPromotionList;
 import entities.TblUser;
 import entities.TblUserGroup;
 import java.io.IOException;
@@ -22,19 +23,23 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import service.PromotionListService;
 import service.UserService;
 
 /**
  *
  * @author NhanTT
  */
-@WebFilter(filterName = "AdminFilter", urlPatterns = {"/newUser.jsp"})
+@WebFilter(filterName = "AdminFilter", urlPatterns = {
+    "/newUser.jsp",
+    "/promotionList.jsp"})
 public class AdminFilter implements Filter {
 
     private static final boolean debug = true;
     private static final String loginPage = "login.jsp";
     private static final String userListPage = "userList.jsp";
     private static final String newUserPage = "newUser.jsp";
+    private static final String promotionListPage = "promotionList.jsp";
 
     // The filter configuration object we are associated with.  If
     // this value is null, this filter instance is not currently
@@ -132,6 +137,10 @@ public class AdminFilter implements Filter {
                 if (uri.contains(newUserPage)) {
                     List<TblUserGroup> allGroups = userService.getAllGroups();
                     req.setAttribute("ALL_GROUPS", allGroups);
+                } else if (uri.contains(promotionListPage)) {
+                    PromotionListService promotionListService = new PromotionListService();
+                    List<TblPromotionList> promotionLists = promotionListService.getAllCurrentPromotionList();
+                    req.setAttribute("PROMOTION_LISTS", promotionLists);
                 }
 
                 chain.doFilter(request, response);

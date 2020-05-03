@@ -12,6 +12,7 @@ import entities.TblPromotionList;
 import entities.TblUser;
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -32,6 +33,11 @@ public class PromotionListService {
         TblPromotionList promotionList = promotionListDAO.getPromotionListByUser(user);
         
         return promotionList;
+    }
+    
+    public List<TblPromotionList> getAllCurrentPromotionList() {
+        PromotionListDAO promotionListDAO = new PromotionListDAO();
+        return promotionListDAO.getAllCurrentPromotions();
     }
     
     public boolean hasPromoted(String username) {

@@ -38,6 +38,7 @@
             </form>
             <br/>
             <a href="newUser.jsp">Create new user</a>
+            <a href="promotionList.jsp" style="margin-left: 20px;">View Promotion list</a>
             <br/>
             <br/>
         </c:if>

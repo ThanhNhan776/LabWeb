@@ -72,13 +72,13 @@ public class PromotionListDAO {
         return null;
     }
 
-    public List<TblPromotionList> getAllPromotions() {
+    public List<TblPromotionList> getAllCurrentPromotions() {
         EntityManager em = DBUtils.getEntityManager();
         try {
             EntityTransaction transaction = em.getTransaction();
             transaction.begin();
 
-            List<TblPromotionList> promotions = em.createNamedQuery("TblPromotionList.findAll")
+            List<TblPromotionList> promotions = em.createNamedQuery("TblPromotionList.findAllCurrentUsername")
                     .getResultList();
 
             transaction.commit();

@@ -31,6 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "TblPromotionList.findAll", query = "SELECT t FROM TblPromotionList t")
+    , @NamedQuery(name = "TblPromotionList.findAllCurrentUsername", query = "SELECT t FROM TblPromotionList t WHERE t.createdDate = (SELECT MAX(pl.createdDate) FROM TblPromotionList pl WHERE pl.username = t.username)")
     , @NamedQuery(name = "TblPromotionList.findById", query = "SELECT t FROM TblPromotionList t WHERE t.id = :id")
     , @NamedQuery(name = "TblPromotionList.findCurrentUsername", query = "SELECT t FROM TblPromotionList t WHERE t.username = :username ORDER BY t.createdDate DESC")
     , @NamedQuery(name = "TblPromotionList.findByRank", query = "SELECT t FROM TblPromotionList t WHERE t.rank = :rank")
