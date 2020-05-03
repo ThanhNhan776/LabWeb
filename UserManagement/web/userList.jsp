@@ -37,6 +37,9 @@
                 <input type="submit" value="Search Name" />
             </form>
             <br/>
+            <a href="newUser.jsp">Create new user</a>
+            <br/>
+            <br/>
         </c:if>
 
         <c:set var="groups" value="${GROUP_LIST}"/>

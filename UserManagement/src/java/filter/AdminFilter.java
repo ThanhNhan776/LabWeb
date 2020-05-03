@@ -6,10 +6,12 @@
 package filter;
 
 import entities.TblUser;
+import entities.TblUserGroup;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.List;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -24,39 +26,75 @@ import service.UserService;
 
 /**
  *
- * @author TiTi
+ * @author NhanTT
  */
-@WebFilter(filterName = "UserFilter", urlPatterns = {
-    "/UserListServlet",
-    "/UpdateUserServlet",
-    "/newUser.jsp",
-    "/userList.jsp"})
-public class UserFilter implements Filter {
+@WebFilter(filterName = "AdminFilter", urlPatterns = {"/newUser.jsp"})
+public class AdminFilter implements Filter {
 
     private static final boolean debug = true;
     private static final String loginPage = "login.jsp";
+    private static final String userListPage = "userList.jsp";
+    private static final String newUserPage = "newUser.jsp";
 
     // The filter configuration object we are associated with.  If
     // this value is null, this filter instance is not currently
     // configured. 
     private FilterConfig filterConfig = null;
 
-    public UserFilter() {
+    public AdminFilter() {
     }
 
     private void doBeforeProcessing(ServletRequest request, ServletResponse response)
             throws IOException, ServletException {
         if (debug) {
-            log("UserFilter:DoBeforeProcessing");
+            log("AdminFilter:DoBeforeProcessing");
         }
 
+        // Write code here to process the request and/or response before
+        // the rest of the filter chain is invoked.
+        // For example, a logging filter might log items on the request object,
+        // such as the parameters.
+        /*
+	for (Enumeration en = request.getParameterNames(); en.hasMoreElements(); ) {
+	    String name = (String)en.nextElement();
+	    String values[] = request.getParameterValues(name);
+	    int n = values.length;
+	    StringBuffer buf = new StringBuffer();
+	    buf.append(name);
+	    buf.append("=");
+	    for(int i=0; i < n; i++) {
+	        buf.append(values[i]);
+	        if (i < n-1)
+	            buf.append(",");
+	    }
+	    log(buf.toString());
+	}
+         */
     }
 
     private void doAfterProcessing(ServletRequest request, ServletResponse response)
             throws IOException, ServletException {
         if (debug) {
-            log("UserFilter:DoAfterProcessing");
+            log("AdminFilter:DoAfterProcessing");
         }
+
+        // Write code here to process the request and/or response after
+        // the rest of the filter chain is invoked.
+        // For example, a logging filter might log the attributes on the
+        // request object after the request has been processed. 
+        /*
+	for (Enumeration en = request.getAttributeNames(); en.hasMoreElements(); ) {
+	    String name = (String)en.nextElement();
+	    Object value = request.getAttribute(name);
+	    log("attribute: " + name + "=" + value.toString());
+
+	}
+         */
+        // For example, a filter might append something to the response.
+        /*
+	PrintWriter respOut = new PrintWriter(response.getWriter());
+	respOut.println("<P><B>This has been appended by an intrusive filter.</B>");
+         */
     }
 
     /**
@@ -68,13 +106,12 @@ public class UserFilter implements Filter {
      * @exception IOException if an input/output error occurs
      * @exception ServletException if a servlet error occurs
      */
-    @Override
     public void doFilter(ServletRequest request, ServletResponse response,
             FilterChain chain)
             throws IOException, ServletException {
 
         if (debug) {
-            log("UserFilter:doFilter()");
+            log("AdminFilter:doFilter()");
         }
 
         doBeforeProcessing(request, response);
@@ -84,14 +121,21 @@ public class UserFilter implements Filter {
             HttpServletRequest req = (HttpServletRequest) request;
             HttpServletResponse res = (HttpServletResponse) response;
             HttpSession session = req.getSession(true);
-            
+
             UserService userService = new UserService(session);
 
             TblUser user = userService.getCurrentUser();
-            if (user == null) {
+            if (user == null || !"Admin".equals(user.getGroupId().getName())) {
                 res.sendRedirect(loginPage);
             } else {
+                String uri = req.getRequestURI(); 
+                if (uri.contains(newUserPage)) {
+                    List<TblUserGroup> allGroups = userService.getAllGroups();
+                    req.setAttribute("ALL_GROUPS", allGroups);
+                }
+
                 chain.doFilter(request, response);
+
             }
         } catch (IOException | ServletException t) {
             // If an exception is thrown somewhere down the filter chain,
@@ -144,7 +188,7 @@ public class UserFilter implements Filter {
         this.filterConfig = filterConfig;
         if (filterConfig != null) {
             if (debug) {
-                log("UserFilter:Initializing filter");
+                log("AdminFilter:Initializing filter");
             }
         }
     }
@@ -155,9 +199,9 @@ public class UserFilter implements Filter {
     @Override
     public String toString() {
         if (filterConfig == null) {
-            return ("UserFilter()");
+            return ("AdminFilter()");
         }
-        StringBuffer sb = new StringBuffer("UserFilter(");
+        StringBuffer sb = new StringBuffer("AdminFilter(");
         sb.append(filterConfig);
         sb.append(")");
         return (sb.toString());

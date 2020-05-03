@@ -111,4 +111,30 @@ public class UserService {
 
         return userDAO.updateUser(user);
     }
+    
+    public TblUser createUser(String username, String password, String name, String email, String phone, String photo, int groupId) {
+        TblUser user = new TblUser();
+        
+        user.setUsername(username.trim());
+        
+        if (password != null && !password.trim().isEmpty()) {
+            String passwordHash = PasswordEncrypter.encrypt(password.trim());
+            user.setPassword(passwordHash);
+        }
+        
+        user.setName(name.trim());
+        user.setEmail(email.trim());
+        user.setPhone(phone.trim());
+        user.setPhoto(photo.trim());
+        
+        UserGroupDAO groupDAO = new UserGroupDAO();
+        TblUserGroup group = groupDAO.getGroupById(groupId);
+        user.setGroupId(group);
+        
+        user.setStatus("active");
+        
+        UserDAO userDAO = new UserDAO();
+
+        return userDAO.createUser(user);
+    }
 }
