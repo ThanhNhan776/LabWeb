@@ -13,8 +13,15 @@
         <title>Search Product Page</title>
     </head>
     <body>
-        <h1>Hello World!</h1>
-        
-        <s:a href="login.jsp" >Login</s:a>
+        <s:if test="#session.USER != null">
+            <h3 style="color: orangered">Welcome, <s:property value="#session.USER.fullname"/>!</h3>
+            <s:a href="logout">Logout</s:a>
+        </s:if>
+        <s:else>
+            <s:a href="login.jsp" >Login</s:a>
+        </s:else>
+
+        <h1>Search Product</h1>
+
     </body>
 </html>

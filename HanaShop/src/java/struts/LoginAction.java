@@ -5,24 +5,40 @@
  */
 package struts;
 
+import com.opensymphony.xwork2.ActionContext;
+import entity.TblUser;
+import java.util.Map;
+import service.UserService;
+
 /**
  *
  * @author NhanTT
  */
 public class LoginAction {
-    
+
     private String username;
     private String password;
     private String message;
     private final String SUCCESS = "success";
     private final String FAIL = "fail";
-    
+
     public LoginAction() {
     }
-    
+
     public String execute() throws Exception {
         String url = FAIL;
-        message = "Invalid username or password";
+
+        Map session = ActionContext.getContext().getSession();
+        UserService userService = new UserService(session);
+
+        TblUser user = userService.login(username, password);
+        if (user == null) {
+            message = "Invalid username or password";
+        } else {
+            message = "";
+            userService.setCurrentUser(user);
+            url = SUCCESS;
+        }
         return url;
     }
 
@@ -67,5 +83,5 @@ public class LoginAction {
     public void setMessage(String message) {
         this.message = message;
     }
-    
+
 }

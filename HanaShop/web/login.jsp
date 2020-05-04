@@ -36,7 +36,7 @@
             <input type="reset" value="Reset" />
         </form>
         
-        <s:if test="message != null">
+        <s:if test="message != null || !message.isEmpty()">
             <h3 style="color: orangered"><em><s:property value="message"/></em></h3>
         </s:if>
     </body>
