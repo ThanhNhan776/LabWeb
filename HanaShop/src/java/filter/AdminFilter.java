@@ -42,7 +42,7 @@ public class AdminFilter implements Filter {
     public AdminFilter() {
         adminResources = new ArrayList<>();
         adminResources.add("updateProduct");
-        adminResources.add("updateProduct.action");
+        adminResources.add("createProduct");
     }
 
     private void doBeforeProcessing(ServletRequest request, ServletResponse response)
@@ -140,7 +140,7 @@ public class AdminFilter implements Filter {
                     }
                 }
             }
-            
+
             chain.doFilter(request, response);
         } catch (IOException | ServletException t) {
             // If an exception is thrown somewhere down the filter chain,

@@ -36,6 +36,10 @@
             <s:submit value="Search"/>
         </s:form>
 
+        <s:if test="#session.USER != null && #session.USER.isAdmin">
+            <s:a href="createProduct.jsp">Create new product</s:a>
+        </s:if>
+
         <s:if test="products != null && !products.isEmpty()">
             <h4><em>Found ${productsCount} products</em></h4>
             <table border="1">
@@ -116,7 +120,7 @@
                                 <td style="text-align: center">
                                     <s:date name="createdDate" format="dd/MM/yyyy"/>
                                 </td>
-                                
+
                                 <!--Quantity-->
                                 <s:if test="#session.USER != null && #session.USER.isAdmin">
                                     <td>

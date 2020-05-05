@@ -91,4 +91,26 @@ public class ProductDAO {
         
         return null;
     }
+    
+    public TblProduct createProduct(TblProduct product) {
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            EntityTransaction transaction = em.getTransaction();
+            transaction.begin();
+            
+            em.persist(product);
+            
+            transaction.commit();
+            
+            return product;
+        } catch (Exception e) {
+            Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+        
+        return null;
+    }
 }

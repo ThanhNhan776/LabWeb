@@ -38,4 +38,8 @@ public class ProductService {
         product.setModifiedDate(Date.from(Instant.now()));
         return productDAO.updateProduct(product);
     }
+    
+    public TblProduct createProduct(TblProduct product) {
+        return productDAO.createProduct(product);
+    }
 }

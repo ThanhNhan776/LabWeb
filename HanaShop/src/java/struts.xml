@@ -31,5 +31,9 @@
                 <param name="actionName">searchProduct</param>
             </result>
         </action>
+        
+        <action name="createProduct" class="struts.CreateProductAction">
+            <result name="success">createProduct.jsp</result>
+        </action>
     </package>
 </struts>
