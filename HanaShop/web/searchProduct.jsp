@@ -44,41 +44,126 @@
                         <th>No.</th>
                         <th>Name</th>
                         <th>Image</th>
+                            <s:if test="#session.USER != null && #session.USER.isAdmin">
+                            <th>Image Url</th>
+                            </s:if>
                         <th>Description</th>
                         <th>Price</th>
                         <th>Created Date</th>
                         <th>Category</th>
+                            <s:if test="#session.USER != null && #session.USER.isAdmin">
+                            <th>Status</th>
+                            </s:if>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     <s:iterator value="products" status="counter">
-                        <tr>
-                            <td style="text-align: center">
-                                <s:property value="#counter.count + (pageNumber - 1) * pageSize"/>
-                            </td>
-                            <td>
-                                <s:property value="name"/>
-                            </td>
-                            <td>
-                                <img src="${image}" height="90px"/>
-                            </td>
-                            <td style="width: 500px">
-                                <s:property value="description"/>
-                            </td>
-                            <td style="text-align: right">
-                                <s:number name="price" currency="vnd"/> vnd
-                            </td>
-                            <td style="text-align: center">
-                                <s:date name="createdDate" format="dd/MM/yyyy"/>
-                            </td>
-                            <td>
-                                <s:property value="categoryId.name"/>
-                            </td>
-                            <td>
-                                <button>Add to cart</button>
-                            </td>
-                        </tr>
+                        <s:form action="updateProduct" method="POST" theme="simple">
+                            <tr>
+                                <!-- No. -->
+                                <td style="text-align: center">
+                                    <s:property value="#counter.count + (pageNumber - 1) * pageSize"/>
+                                </td>
+
+                                <!--Name-->
+                                <td style="width: 200px">
+                                    <s:if test="#session.USER != null && #session.USER.isAdmin">
+                                        <s:textfield name="name"/>
+                                    </s:if>
+                                    <s:else>
+                                        <s:property value="name"/>
+                                    </s:else>
+                                </td>
+
+                                <!--Image-->
+                                <td>
+                                    <img src="${image}" height="90px"/>
+                                </td>
+
+                                <!--Image Url - Admin only-->
+                                <s:if test="#session.USER != null && #session.USER.isAdmin">
+                                    <td>
+                                        <s:textfield name="imageUrl" value="%{image}"/>
+                                    </td>
+                                </s:if>
+
+                                <!--Description-->
+                                <td style="width: 450px">
+                                    <s:if test="#session.USER != null && #session.USER.isAdmin">
+                                        <s:textarea name="description" rows="5" cssStyle="width: 100%"/>
+                                    </s:if>
+                                    <s:else>
+                                        <s:property value="description"/>
+                                    </s:else>
+                                </td>
+
+                                <!--Price-->
+                                <td style="text-align: right">
+
+                                    <s:if test="#session.USER != null && #session.USER.isAdmin">
+                                        <s:textfield name="price" type="number" min="0" cssStyle="width: 100px; text-align: right; display: inline"/> vnd
+                                    </s:if>
+                                    <s:else>
+                                        <s:number name="price" currency="vnd"/> vnd
+                                    </s:else>
+                                </td>
+
+                                <!--Created date-->
+                                <td style="text-align: center">
+                                    <s:date name="createdDate" format="dd/MM/yyyy"/>
+                                </td>
+
+                                <!--Category-->
+                                <td>
+                                    <s:if test="#session.USER != null && #session.USER.isAdmin">
+                                        <s:if test="#session.CATEGORIES != null">
+                                            <s:select 
+                                                list="#session.CATEGORIES" 
+                                                name="categoryId" 
+                                                listKey="id"
+                                                listValue="name"
+                                                value="categoryId.id"
+                                                theme="simple" />
+                                        </s:if>
+                                    </s:if>
+                                    <s:else>
+                                        <s:property value="categoryId.name"/>
+                                    </s:else>
+                                </td>
+
+                                <!--Status - Admin only-->
+                                <s:if test="#session.USER != null && #session.USER.isAdmin">
+                                    <td>
+                                        <s:if test="#session.STATUSES != null">
+                                            <s:select 
+                                                list="#session.STATUSES"
+                                                name="status"
+                                                theme="simple"/>
+                                        </s:if>
+                                    </td>
+                                </s:if>
+
+                                <!--Action-->
+                                <td style="text-align: center">
+                                    <button>Add to cart</button>
+                                    <s:if test="#session.USER != null && #session.USER.isAdmin">
+                                        <br/>
+                                        <s:submit 
+                                            name="btAction" 
+                                            value="Update"
+                                            cssStyle="margin-top: 5px; color: steelblue"/>
+                                        <s:hidden name="productId" value="%{id}"/>
+                                        <br/>
+                                        <s:submit 
+                                            name="btAction" 
+                                            value="Delete"
+                                            cssStyle="margin-top: 5px; color: salmon"
+                                            onclick="return confirmIfDelete('%{name}')"/>
+                                    </s:if>
+                                </td>
+                            </tr>
+                        </s:form>
                     </s:iterator>
                 </tbody>
             </table>
@@ -103,5 +188,10 @@
             <h3><em>No products found!</em></h3>
         </s:else>
 
+        <script>
+            function confirmIfDelete(productName) {
+                return confirm('You you want to delete ' + productName + '?');
+            }
+        </script>
     </body>
 </html>

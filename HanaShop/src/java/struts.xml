@@ -10,17 +10,26 @@
                 <param name="actionName">searchProduct</param>
             </result>
         </action>
+        
         <action name="login" class="struts.LoginAction">
             <result name="success" type="redirect">
                 searchProduct
             </result>
             <result name="fail">login.jsp</result>
         </action>
+        
         <action name="logout" class="struts.LogoutAction">
             <result type="redirect">login.jsp</result>
         </action>
+        
         <action name="searchProduct" class="struts.SearchProductAction">
             <result name="success">searchProduct.jsp</result>
+        </action>
+        
+        <action name="updateProduct" class="struts.UpdateProductAction">
+            <result name="success" type="redirectAction">
+                <param name="actionName">searchProduct</param>
+            </result>
         </action>
     </package>
 </struts>

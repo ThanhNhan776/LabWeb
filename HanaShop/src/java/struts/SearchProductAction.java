@@ -54,7 +54,7 @@ public class SearchProductAction {
 
             List<TblProduct> productsToRemove = new ArrayList<>();
             for (TblProduct product : products) {
-                if (!product.getCategoryId().getName().contains(categoryName)) {
+                if (!product.getCategoryId().getName().toLowerCase().contains(categoryName.toLowerCase())) {
                     productsToRemove.add(product);
                 }
             }

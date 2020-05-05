@@ -21,13 +21,13 @@
                     <tr>
                         <td>Username</td>
                         <td>
-                            <input type="text" name="username" value="" />
+                            <input type="text" name="username" value="" required/>
                         </td>
                     </tr>
                     <tr>
                         <td>Password</td>
                         <td>
-                            <input type="password" name="password" value="" />
+                            <input type="password" name="password" value="" required/>
                         </td>
                     </tr>
                 </tbody>
