@@ -50,6 +50,9 @@
                         <th>Description</th>
                         <th>Price</th>
                         <th>Created Date</th>
+                            <s:if test="#session.USER != null && #session.USER.isAdmin">
+                            <th>Quantity</th>
+                            </s:if>
                         <th>Category</th>
                             <s:if test="#session.USER != null && #session.USER.isAdmin">
                             <th>Status</th>
@@ -113,6 +116,13 @@
                                 <td style="text-align: center">
                                     <s:date name="createdDate" format="dd/MM/yyyy"/>
                                 </td>
+                                
+                                <!--Quantity-->
+                                <s:if test="#session.USER != null && #session.USER.isAdmin">
+                                    <td>
+                                        <s:textfield name="quantity" type="number" min="0" cssStyle="width: 70px; text-align: right; display: inline"/>
+                                    </td>
+                                </s:if>
 
                                 <!--Category-->
                                 <td>
