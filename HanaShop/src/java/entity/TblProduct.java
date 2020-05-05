@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package entity;
 
 import java.io.Serializable;
@@ -35,6 +34,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "TblProduct.findAll", query = "SELECT t FROM TblProduct t")
     , @NamedQuery(name = "TblProduct.findById", query = "SELECT t FROM TblProduct t WHERE t.id = :id")
     , @NamedQuery(name = "TblProduct.findByName", query = "SELECT t FROM TblProduct t WHERE t.name = :name")
+    , @NamedQuery(name = "TblProduct.findByNameAndRangePrice", query = "SELECT t FROM TblProduct t WHERE t.name LIKE :name AND t.price >= :minPrice AND t.price <= :maxPrice ORDER BY t.createdDate DESC")
     , @NamedQuery(name = "TblProduct.findByImage", query = "SELECT t FROM TblProduct t WHERE t.image = :image")
     , @NamedQuery(name = "TblProduct.findByDescription", query = "SELECT t FROM TblProduct t WHERE t.description = :description")
     , @NamedQuery(name = "TblProduct.findByPrice", query = "SELECT t FROM TblProduct t WHERE t.price = :price")

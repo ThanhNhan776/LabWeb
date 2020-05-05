@@ -5,14 +5,22 @@
 <struts>
     <!-- Configuration for the default package. -->
     <package name="default" extends="struts-default" namespace="/">
+        <action name="" class="struts.SearchProductAction">
+            <result type="redirectAction">
+                <param name="actionName">searchProduct</param>
+            </result>
+        </action>
         <action name="login" class="struts.LoginAction">
             <result name="success" type="redirect">
-                searchProduct.jsp
+                searchProduct
             </result>
             <result name="fail">login.jsp</result>
         </action>
         <action name="logout" class="struts.LogoutAction">
             <result type="redirect">login.jsp</result>
+        </action>
+        <action name="searchProduct" class="struts.SearchProductAction">
+            <result name="success">searchProduct.jsp</result>
         </action>
     </package>
 </struts>
