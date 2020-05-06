@@ -33,6 +33,7 @@ public class UserFilter implements Filter {
     private static final boolean debug = false;
 
     private List<String> nonAdminResources;
+    private List<String> userResources;
 
     // The filter configuration object we are associated with.  If
     // this value is null, this filter instance is not currently
@@ -44,6 +45,9 @@ public class UserFilter implements Filter {
         nonAdminResources.add("addToCart");
         nonAdminResources.add("updateCart");
         nonAdminResources.add("viewCart.jsp");
+        
+        userResources = new ArrayList<>();
+        userResources.add("orderHistory");
     }
 
     private void doBeforeProcessing(ServletRequest request, ServletResponse response)
@@ -129,6 +133,15 @@ public class UserFilter implements Filter {
 
             if (user != null && user.getIsAdmin()) {
                 for (String resource : nonAdminResources) {
+                    if (uri.contains(resource)) {
+                        res.sendRedirect("login.jsp");
+                        return;
+                    }
+                }
+            }
+            
+            if (user == null || user.getIsAdmin()) {
+                for (String resource : userResources) {
                     if (uri.contains(resource)) {
                         res.sendRedirect("login.jsp");
                         return;

@@ -6,7 +6,8 @@
 package dao;
 
 import entity.TblOrder;
-import entity.TblProduct;
+import entity.TblUser;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
@@ -30,6 +31,30 @@ public class OrderDAO {
             transaction.commit();
 
             return order;
+        } catch (Exception e) {
+            Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+
+        return null;
+    }
+
+    public List<TblOrder> getOrders(TblUser user) {
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            EntityTransaction transaction = em.getTransaction();
+            transaction.begin();
+
+            List<TblOrder> orders = em.createNamedQuery("TblOrder.findByUser")
+                    .setParameter("user", user)
+                    .getResultList();
+
+            transaction.commit();
+
+            return orders;
         } catch (Exception e) {
             Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, e);
         } finally {

@@ -41,6 +41,9 @@
         </s:if>
         <s:else>
             <s:a href="viewCart.jsp">View cart</s:a>
+            <s:if test="#session.USER != null && !#session.USER.isAdmin">
+                <s:a href="orderHistory" cssStyle="margin-left: 20px">View shopping history</s:a>
+            </s:if>
         </s:else>
 
         <s:if test="message != null && !message.isEmpty()">

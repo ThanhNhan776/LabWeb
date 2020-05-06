@@ -21,6 +21,14 @@
         <url-pattern>/viewCart.jsp</url-pattern>
     </filter-mapping>
     <filter-mapping>
+        <filter-name>UserFilter</filter-name>
+        <url-pattern>/orderHistory</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>UserFilter</filter-name>
+        <url-pattern>/orderHistory.jsp</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
         <filter-name>AdminFilter</filter-name>
         <url-pattern>/searchProduct</url-pattern>
     </filter-mapping>

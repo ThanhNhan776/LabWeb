@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package entity;
 
 import java.io.Serializable;
@@ -37,6 +36,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "TblOrder.findAll", query = "SELECT t FROM TblOrder t")
     , @NamedQuery(name = "TblOrder.findById", query = "SELECT t FROM TblOrder t WHERE t.id = :id")
+    , @NamedQuery(name = "TblOrder.findByUser", query = "SELECT t FROM TblOrder t WHERE t.username = :user")
     , @NamedQuery(name = "TblOrder.findByCreatedDate", query = "SELECT t FROM TblOrder t WHERE t.createdDate = :createdDate")})
 public class TblOrder implements Serializable {
 
