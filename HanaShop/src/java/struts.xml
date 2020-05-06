@@ -35,5 +35,12 @@
         <action name="createProduct" class="struts.CreateProductAction">
             <result name="success">createProduct.jsp</result>
         </action>
+        
+        <action name="addToCart" class="struts.AddToCartAction">
+            <result name="success" type="redirectAction">
+                <param name="actionName">searchProduct</param>
+                <param name="message">${message}</param>
+            </result>
+        </action>
     </package>
 </struts>

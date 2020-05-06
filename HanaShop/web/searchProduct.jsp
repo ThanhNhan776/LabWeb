@@ -39,6 +39,15 @@
         <s:if test="#session.USER != null && #session.USER.isAdmin">
             <s:a href="createProduct.jsp">Create new product</s:a>
         </s:if>
+        <s:else>
+            <s:a href="viewCart.jsp">View cart</s:a>
+        </s:else>
+
+        <s:if test="message != null && !message.isEmpty()">
+            <h4 style="color: greenyellow">
+                <em>${message}</em>
+            </h4>
+        </s:if>
 
         <s:if test="products != null && !products.isEmpty()">
             <h4><em>Found ${productsCount} products</em></h4>
@@ -61,13 +70,18 @@
                             <s:if test="#session.USER != null && #session.USER.isAdmin">
                             <th>Status</th>
                             </s:if>
-                        <th>Action</th>
+                            <s:if test="#session.USER != null && #session.USER.isAdmin">
+                            <th>Admin Action</th>
+                            </s:if>
+                            <s:else>
+                            <th>Action</th>
+                            </s:else>
                     </tr>
                 </thead>
                 <tbody>
                     <s:iterator value="products" status="counter">
-                        <s:form action="updateProduct" method="POST" theme="simple">
-                            <tr>
+                        <tr>
+                            <s:form action="updateProduct" method="POST" theme="simple">
                                 <!-- No. -->
                                 <td style="text-align: center">
                                     <s:property value="#counter.count + (pageNumber - 1) * pageSize"/>
@@ -159,10 +173,8 @@
                                 </s:if>
 
                                 <!--Action-->
-                                <td style="text-align: center">
-                                    <button>Add to cart</button>
-                                    <s:if test="#session.USER != null && #session.USER.isAdmin">
-                                        <br/>
+                                <s:if test="#session.USER != null && #session.USER.isAdmin">
+                                    <td style="text-align: center">
                                         <s:submit 
                                             name="btAction" 
                                             value="Update"
@@ -174,10 +186,23 @@
                                             value="Delete"
                                             cssStyle="margin-top: 5px; color: salmon"
                                             onclick="return confirmIfDelete('%{name}')"/>
-                                    </s:if>
-                                </td>
-                            </tr>
-                        </s:form>
+                                    </td>
+                                </s:if>
+                            </s:form>
+
+                            <s:else>
+                                <s:form action="addToCart" method="POST" theme="simple">
+                                    <td style="text-align: center">
+                                        <s:submit value="Add to cart"/>
+                                        <s:hidden name="productId" value="%{id}"/>
+                                        <s:hidden name="productName"/>
+                                        <s:hidden name="categoryName"/>
+                                        <s:hidden name="minPrice"/>
+                                        <s:hidden name="maxPrice"/>
+                                    </td>
+                                </s:form>
+                            </s:else>
+                        </tr>
                     </s:iterator>
                 </tbody>
             </table>
