@@ -6,9 +6,15 @@
 
 package service;
 
+import dao.OrderDAO;
+import dao.ProductDAO;
 import entity.TblOrder;
 import entity.TblOrderDetails;
+import entity.TblProduct;
+import entity.TblUser;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 
@@ -73,5 +79,45 @@ public class CartService {
         }
         session.put("CART", cart);
         return true;
+    }
+    
+    public boolean confirmProduct(TblOrderDetails detail) {
+        ProductDAO productDAO = new ProductDAO();
+        int productId = detail.getProductId().getId();
+        TblProduct product = productDAO.getProductById(productId);
+        
+        return detail.getQuantity() <= product.getQuantity();
+    }
+    
+    public boolean confirmProducts(TblOrder order) {
+        for (TblOrderDetails detail : order.getTblOrderDetailsCollection()) {
+            if (!this.confirmProduct(detail)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    public boolean saveCart(TblOrder cart) {        
+        OrderDAO orderDAO = new OrderDAO();
+        TblOrder order = orderDAO.createOrder(cart);
+        
+        if (order != null) {
+            // change products amount
+            ProductDAO productDAO = new ProductDAO();
+            for (TblOrderDetails detail : cart.getTblOrderDetailsCollection()) {
+                TblProduct dbProduct = productDAO.getProductById(detail.getProductId().getId());
+                
+                int quantity = dbProduct.getQuantity() - detail.getQuantity();
+                quantity = quantity < 0 ? 0 : quantity;
+                dbProduct.setQuantity(quantity);
+                
+                productDAO.updateProduct(dbProduct);
+            }
+            
+            return true;
+        }
+        
+        return false;
     }
 }

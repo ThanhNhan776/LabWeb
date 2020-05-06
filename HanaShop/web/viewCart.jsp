@@ -101,13 +101,27 @@
                 </table>
 
                 <p><em>Total price: <strong><s:number name="#totalPrice" currency="vnd"/> vnd<strong></em></p>
-                            </s:else>
-                        </s:else>
+                                
+                <s:form action="confirmCart" method="POST">
+                     <s:select label="Payment method" 
+                          list="#session.PAYMENT_METHODS" 
+                          listKey="id"
+                          listValue="name"
+                          name="paymentMethodId"
+                          />
+                    <s:submit value="Confirm"/>
+                </s:form>
+            </s:else>
+        </s:else>
 
-                        <script>
-                            function confirmIfDelete(productName) {
-                                return confirm('You you want to delete ' + productName + '?');
-                            }
-                        </script>
-                        </body>
-                        </html>
+        <s:if test="message != null && !message.isEmpty()">
+            <h3 style="color: teal"><em>${message}</em></h3>
+        </s:if>
+            
+        <script>
+            function confirmIfDelete(productName) {
+                return confirm('You you want to delete ' + productName + '?');
+            }
+        </script>
+    </body>
+</html>

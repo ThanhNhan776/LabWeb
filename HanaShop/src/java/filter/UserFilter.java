@@ -5,6 +5,7 @@
  */
 package filter;
 
+import entity.TblPaymentMethod;
 import entity.TblUser;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -21,6 +22,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import service.PaymentMethodService;
 
 /**
  *
@@ -123,16 +125,23 @@ public class UserFilter implements Filter {
             HttpSession session = req.getSession(true);
             TblUser user = (TblUser) session.getAttribute("USER");
 
+            String uri = req.getRequestURI();
+
             if (user != null && user.getIsAdmin()) {
-                String uri = req.getRequestURI(); 
                 for (String resource : nonAdminResources) {
                     if (uri.contains(resource)) {
                         res.sendRedirect("login.jsp");
                         return;
                     }
                 }
-            } 
+            }
 
+            if (uri.contains("viewCart.jsp")) {
+                PaymentMethodService paymentMethodService = new PaymentMethodService();
+                List<TblPaymentMethod> paymentMethods = paymentMethodService.getAllPaymentMethods();
+                session.setAttribute("PAYMENT_METHODS", paymentMethods);
+            }
+            
             chain.doFilter(request, response);
         } catch (IOException | ServletException t) {
             // If an exception is thrown somewhere down the filter chain,
