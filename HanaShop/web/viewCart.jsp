@@ -11,6 +11,11 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>View Cart Page</title>
+        <style>
+            th, td {
+                padding: 0 5px;
+            }
+        </style>
     </head>
     <body>
         <s:if test="#session.USER != null">
@@ -20,6 +25,10 @@
         <s:else>
             <s:a href="login.jsp" >Login</s:a>
         </s:else>
+
+        <s:a href="searchProduct">
+            <h4>Home</h4>
+        </s:a>
 
         <h1>View Cart</h1>
 
@@ -32,8 +41,73 @@
                 <h3>Your cart is empty.</h3>
             </s:if>  
             <s:else>
-                <p>There are ${details.size()} items in your cart.</p>
-            </s:else>
-        </s:else>
-    </body>
-</html>
+                <s:set var="totalPrice" value="%{0}"/>
+                <p><em>There are <strong>${details.size()} items</strong> in your cart.</em></p>
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>Product name</th>
+                            <th>Image</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <s:iterator value="#details" status="counter">
+                            <s:form action="updateCart" method="POST" theme="simple">
+                                <tr>
+                                    <td>
+                                        ${counter.count}
+                                    </td>
+                                    <td>
+                                        ${productId.name}
+                                    </td>
+                                    <td>
+                                        <img src="${productId.image}" height="90px"/>
+                                    </td>
+                                    <td style="text-align: right">
+                                        <s:number name="price" currency="vnd"/> vnd
+                                    </td>
+                                    <td>
+                                        <s:textfield name="quantity" cssStyle="text-align: center; width: 100px" type="number" min="1" required="required"/>
+                                    </td>
+                                    <td>
+                                        <s:set var="total" value="%{price * quantity}"/>
+                                        <s:number name="#total" currency="vnd"/> vnd
+                                    </td>
+                                    <td>
+                                        <s:submit 
+                                            name="btAction"
+                                            value="Update" 
+                                            cssStyle="margin-top: 5px; color: steelblue"/>
+                                        <br/>
+                                        <s:submit 
+                                            name="btAction"
+                                            value="Delete"
+                                            cssStyle="margin-top: 5px; color: salmon"
+                                            onclick="return confirmIfDelete('%{productId.name}')"/>
+
+                                        <s:hidden name="detailPosition" value="%{#counter.count - 1}"/>
+                                    </td>   
+                                </tr>
+
+                                <s:set var="totalPrice" value="%{#totalPrice + price * quantity}"/>
+                            </s:form>
+                        </s:iterator>
+                    </tbody>
+                </table>
+
+                <p><em>Total price: <strong><s:number name="#totalPrice" currency="vnd"/> vnd<strong></em></p>
+                            </s:else>
+                        </s:else>
+
+                        <script>
+                            function confirmIfDelete(productName) {
+                                return confirm('You you want to delete ' + productName + '?');
+                            }
+                        </script>
+                        </body>
+                        </html>

@@ -5,7 +5,6 @@
  */
 package filter;
 
-import entity.TblCategory;
 import entity.TblUser;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -22,7 +21,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import service.CategoryService;
 
 /**
  *
@@ -42,6 +40,8 @@ public class UserFilter implements Filter {
     public UserFilter() {
         nonAdminResources = new ArrayList<>();
         nonAdminResources.add("addToCart");
+        nonAdminResources.add("updateCart");
+        nonAdminResources.add("viewCart.jsp");
     }
 
     private void doBeforeProcessing(ServletRequest request, ServletResponse response)
@@ -124,7 +124,7 @@ public class UserFilter implements Filter {
             TblUser user = (TblUser) session.getAttribute("USER");
 
             if (user != null && user.getIsAdmin()) {
-                String uri = req.getRequestURI();
+                String uri = req.getRequestURI(); 
                 for (String resource : nonAdminResources) {
                     if (uri.contains(resource)) {
                         res.sendRedirect("login.jsp");
