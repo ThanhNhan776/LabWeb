@@ -7,6 +7,7 @@ package dao;
 
 import entity.TblOrder;
 import entity.TblUser;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,13 +43,15 @@ public class OrderDAO {
         return null;
     }
 
-    public List<TblOrder> getOrders(TblUser user) {
+    public List<TblOrder> getOrders(TblUser user, Date fromDate, Date toDate) {
         EntityManager em = DBUtils.getEntityManager();
         try {
             EntityTransaction transaction = em.getTransaction();
             transaction.begin();
 
-            List<TblOrder> orders = em.createNamedQuery("TblOrder.findByUser")
+            List<TblOrder> orders = em.createNamedQuery("TblOrder.findByUserAndDateRange")
+                    .setParameter("fromDate", fromDate)
+                    .setParameter("toDate", toDate)
                     .setParameter("user", user)
                     .getResultList();
 

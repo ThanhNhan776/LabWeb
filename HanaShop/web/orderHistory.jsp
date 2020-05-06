@@ -32,6 +32,13 @@
 
         <h1>Order History</h1>
 
+        <s:form action="orderHistory" method="POST">
+            <s:textfield name="productName" label="Product name"/>
+            <s:textfield name="fromDateStr" label="From date" type="date"/>
+            <s:textfield name="toDateStr" label="To date" type="date"/>
+            <s:submit value="Search"/>
+        </s:form>
+
         <s:if test="orders == null || orders.isEmpty()">
             <h3>Your shopping history is empty.</h3>
         </s:if>
@@ -85,6 +92,8 @@
                         </s:iterator>
                     </tbody>
                 </table>
+                <p><em>Total price: <strong><s:number name="#totalPrice" currency="vnd"/> vnd</strong></em></p>
+
                 <br/>
             </s:iterator>
         </s:else>
